@@ -14,11 +14,16 @@ import lombok.ToString;
 
 public class InvestmentYieldDto{
   
+  public InvestmentYieldDto() {
+    // TODO Auto-generated constructor stub
+  }
   private Integer investmentYear ;//año 
   private Double initialInvestment;//saldo inicial
   private Double yearlyInput;//aportacion 
   //private double Calis = (investmentYield/100);
-  private Double investmentYield = (initialInvestment + yearlyInput);//Rendimiento
-  private Double finalBalance = initialInvestment + investmentYield +yearlyInput;//balance final
+  //private Double investmentYield = (initialInvestment + yearlyInput);//Rendimiento
+  private Double investmentYield;
+  //private Double finalBalance = initialInvestment + investmentYield +yearlyInput;//balance final
+  private Double finalBalance;
 
 }

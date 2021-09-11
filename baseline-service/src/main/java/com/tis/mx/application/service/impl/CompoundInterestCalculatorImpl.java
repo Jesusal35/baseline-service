@@ -4,7 +4,9 @@ package com.tis.mx.application.service.impl;
 import com.tis.mx.application.dto.InitialInvestmentDto;
 import com.tis.mx.application.dto.InvestmentYieldDto;
 import com.tis.mx.application.service.CompoundInterestCalculator;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 
 public class CompoundInterestCalculatorImpl implements CompoundInterestCalculator{
@@ -12,25 +14,36 @@ public class CompoundInterestCalculatorImpl implements CompoundInterestCalculato
   @Override
   public List<InvestmentYieldDto> createRevenueGrid(InitialInvestmentDto initialInvestment) {
     
-    for(int i=1; i<initialInvestment.getInvestmentYears();i++ ) {
-      
+    InvestmentYieldDto investmentYield = new InvestmentYieldDto();
+    List<InvestmentYieldDto> tableYield = new ArrayList<>();
+    
+    for(int i=1; i<=initialInvestment.getInvestmentYears();i++ ) {
+      Integer year = i;
       if(i==1) {
-        Integer year = i;
-        Double initialInvest = initialInvestment.getInitialInvestment();
-        Double yearlyInput = initialInvestment.getYearlyInput();
-        Double investmentYield = ((initialInvestment.getInitialInvestment()+
+        //Double initialInvest = initialInvestment.getInitialInvestment(); 
+        //Double yearlyInput = initialInvestment.getYearlyInput();
+        Double investmentYieldr = ((initialInvestment.getInitialInvestment()+
                initialInvestment.getYearlyInput())*
               (initialInvestment.getInvestmentYield().doubleValue()/100));
-        Double finalBalance = initialInvest+yearlyInput+investmentYield;
-        
+        Double finalBalance = initialInvestment.getInitialInvestment()+
+            initialInvestment.getYearlyInput()+investmentYieldr;
+        investmentYield.setFinalBalance(finalBalance);
+        investmentYield.setInitialInvestment(initialInvestment.getInitialInvestment());
+        investmentYield.setYearlyInput(initialInvestment.getYearlyInput());
+        tableYield.add(investmentYield);
       }else {
-        Integer year = i;      
-        Double initialInvest =initialInvestment.getInitialInvestment() ;//DEberia de ser el finalBalance
+              
+        Double initialInvest = finalBalance;//DEberia de ser el finalBalance
         Double yearlyInput = (initialInvestment.getYearlyInput())*
                   (1+(initialInvestment.getYearlyInputIncrement()/100));
-        Double investmentYield = ((initialInvestment.getInitialInvestment()+
+        investmentYield.setInitialInvestment(initialInvestment.getInitialInvestment());
+        Double investmentYieldr = ((initialInvestment.getInitialInvestment()+
                initialInvestment.getYearlyInput())*
               (initialInvestment.getInvestmentYield().doubleValue()/100));
+        investmentYield.setInvestmentYield(investmentYieldr);
+        Double finalBalance = initialInvest+yearlyInput+investmentYieldr;
+        investmentYield.setFinalBalance(finalBalance);
+        tableYield.add(investmentYield);
         
         
       }
@@ -45,6 +58,37 @@ public class CompoundInterestCalculatorImpl implements CompoundInterestCalculato
     return null;
   }
 
+  
+  /*private InvestmentYieldDto calculateYield(InitialInvestmentDto initialInvestment, 
+      Optional<InvestmentYieldDto> lastInvestmentYield) {
+    
+    InvestmentYieldDto investmentYield = new InvestmentYieldDto();
+    
+    if (lastInvestmentYield.isPresent()) {      
+      InvestmentYieldDto lastResult = lastInvestmentYield.get();
+      investmentYield.setInvestmentYear(lastResult.getInvestmentYear() + 1);
+      investmentYield.setInitialInvestment(lastResult.getFinalBalance());
+      investmentYield.setYearlyInput(
+          lastResult.getYearlyInput() 
+          * (1 + ((float) initialInvestment.getYearlyInputIncrement() / 100f)));
+    } else {
+      investmentYield.setInvestmentYear(1);
+      investmentYield.setInitialInvestment(initialInvestment.getInitialInvestment());
+      investmentYield.setYearlyInput(initialInvestment.getYearlyInput());
+    }
+    
+    Float revenue = (investmentYield.getInitialInvestment() + investmentYield.getYearlyInput())
+        * (initialInvestment.getInvestmentYield() / 100f); 
+    investmentYield.setInvestmentYield(revenue);
+    
+    Float finalBalance = investmentYield.getInitialInvestment() 
+        + investmentYield.getYearlyInput()
+        + investmentYield.getInvestmentYield();
+    investmentYield.setFinalBalance(finalBalance);
+    
+    return investmentYield;
+  }*/
+  
   @Override
   public boolean validateInput(InitialInvestmentDto initialInvestment) {
     
